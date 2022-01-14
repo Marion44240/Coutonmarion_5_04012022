@@ -1,9 +1,13 @@
-// Récupération id des produits dans l'API
 let str = window.location.href;
 let newUrl = new URL(str);
 let productId = newUrl.searchParams.get('id');
 console.log(productId);
 
+const button = document.querySelector('#addToCart');
+const quantityProduct = document.querySelector('#quantity');
+const colorProduct = document.querySelector('#colors')
+
+// Récupération id des produits dans l'API
 fetch('http://localhost:3000/api/products/' + productId)
     .then ((res) => {
         if (res.ok) {
@@ -12,6 +16,7 @@ fetch('http://localhost:3000/api/products/' + productId)
     })
     .then ((product) => {
         detailProducts (product)
+        addToCart(product)
         console.log(product)
     })
 
@@ -31,8 +36,43 @@ function detailProducts(product) {
 
     for (colors of product.colors) {
         let optionColors = document.createElement('option');
-        document.querySelector('#colors').append(optionColors);
+        colorProduct.append(optionColors);
         optionColors.innerHTML = `${colors}`;
         optionColors.value = `${colors}`;
     }  
 }
+
+// Fonction sélectionnant les options des produits pour pouvoir au click les ajouter au panier
+function addToCart(product) {  
+
+    // Evenement au click du boutton "Ajouter au panier"
+    button.addEventListener ('click', (e) => {
+        e.preventDefault();
+
+        if (colorProduct.value == ''){
+            confirm('Sélectionner une couleur de votre choix !');
+        } 
+        else if (quantityProduct.value == 0){
+            confirm('Sélectionner la quantité d\'article souhaité !');
+        }
+        else {
+            alert('Félicitation votre commande a était ajouté au panier !');
+
+            // Information produit à ajouter au panier
+            let infoProduct = {
+                id: productId,
+                color: colorProduct.value,
+                quantity: Number(quantityProduct.value),
+                name: product.name,
+                img: product.imageUrl,
+                altTxt: product.altTxt,
+                description: product.description,
+                price: product.price,
+            };
+            console.log(infoProduct)
+
+            // LocalStorage
+            let localStorageProduct = JSON.parse(localStorage.getItem('Panier'));
+        }
+    })
+};
