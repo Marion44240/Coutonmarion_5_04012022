@@ -5,7 +5,7 @@ console.log(productId);
 
 const button = document.querySelector('#addToCart');
 const quantityProduct = document.querySelector('#quantity');
-const colorProduct = document.querySelector('#colors')
+const colorProduct = document.querySelector('#colors');
 
 // Récupération id des produits dans l'API
 fetch('http://localhost:3000/api/products/' + productId)
@@ -40,7 +40,7 @@ function detailProducts(product) {
         optionColors.innerHTML = `${colors}`;
         optionColors.value = `${colors}`;
     }  
-}
+};
 
 // Fonction sélectionnant les options des produits pour pouvoir au click les ajouter au panier
 function addToCart(product) {  
@@ -67,12 +67,35 @@ function addToCart(product) {
                 img: product.imageUrl,
                 altTxt: product.altTxt,
                 description: product.description,
-                price: product.price,
             };
             console.log(infoProduct)
 
             // LocalStorage
-            let localStorageProduct = JSON.parse(localStorage.getItem('Panier'));
+            let localStorageProduct = JSON.parse(localStorage.getItem('cart'));
+            
+            // On cherche Si le panier contient déjà l'id et la couleur d'un article
+            if (localStorageProduct) {
+                let elt = localStorageProduct.find ((elt) => 
+                elt.id == infoProduct.id && elt.color == infoProduct.color
+                );
+                // Si oui on modifie avec la nouvelle quantité
+                if (elt) {
+                    elt.quantity = elt.quantity + infoProduct.quantity;
+                    localStorage.setItem('cart',JSON.stringify(localStorageProduct));
+                }
+                // Sinon on ajoute le nouvelle article commandé
+                else {
+                    localStorageProduct.push(infoProduct);
+                    localStorage.setItem('cart',JSON.stringify(localStorageProduct));
+                }
+            }
+            // Si le panier et vide 
+            else {
+                localStorageProduct = [];
+                localStorageProduct.push(infoProduct);
+                localStorage.setItem('cart',JSON.stringify(localStorageProduct));
+            }
+            console.table(localStorageProduct)
         }
-    })
-};
+    });
+}
