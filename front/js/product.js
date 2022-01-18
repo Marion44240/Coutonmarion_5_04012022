@@ -67,6 +67,7 @@ function addToCart(product) {
                 img: product.imageUrl,
                 altTxt: product.altTxt,
                 description: product.description,
+                price: product.price,
             };
             console.log(infoProduct)
 
@@ -83,7 +84,7 @@ function addToCart(product) {
                     elt.quantity = elt.quantity + infoProduct.quantity;
                     localStorage.setItem('cart',JSON.stringify(localStorageProduct));
                 }
-                // Sinon on ajoute le nouvelle article commandé
+                // Sinon on ajoute le nouveau produit commandé
                 else {
                     localStorageProduct.push(infoProduct);
                     localStorage.setItem('cart',JSON.stringify(localStorageProduct));
