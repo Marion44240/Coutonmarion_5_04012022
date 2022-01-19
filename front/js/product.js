@@ -55,6 +55,9 @@ function addToCart(product) {
         else if (quantityProduct.value == 0){
             confirm('Sélectionner la quantité d\'article souhaité !');
         }
+        else if (parseInt(quantityProduct.value) > 100) {
+            confirm('Vous ne pouvez pas commander plus de 100 produits !')
+        }
         else {
             alert('Félicitation votre commande a était ajouté au panier !');
 
@@ -67,7 +70,6 @@ function addToCart(product) {
                 img: product.imageUrl,
                 altTxt: product.altTxt,
                 description: product.description,
-                price: product.price,
             };
             console.log(infoProduct)
 
