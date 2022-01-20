@@ -1,10 +1,40 @@
-// Récupération des produits ajouté au panier depuis le local Storage
-let localStorageProduct = JSON.parse(localStorage.getItem('cart'));
-console.table(localStorageProduct);
+const url = 'http://localhost:3000/api/products';
+let localStorageProduct;
+
+// Fonction requête API
+fetch(url)
+    .then ((res) => {
+        if (res.ok) {
+            return res.json();
+        }
+    })
+
+    .then ((products) => {
+        console.log(products);
+
+        // Récupération des produits ajouté au panier depuis le local Storage
+        localStorageProduct = JSON.parse(localStorage.getItem('cart'));
+        // Récupération du prix des produits
+        localStorageProduct = localStorageProduct.map((prod) => {
+            prod.price = products.find((prod2) => {
+                return prod.id == prod2._id
+            }).price
+            return prod;
+        })
+        console.table(localStorageProduct);
+
+        getCard();
+        getTotal();
+    })
+
+    // Message d'erreur si probléme requête API
+    .catch((error) => {
+        alert('Un problème est intervenu, merci de revenir plus tard.');
+    });
 
 // Fonction verifiant si le panier est vide
 function getCard() {
-    if (localStorageProduct === null || localStorageProduct === 0) {
+    if (localStorageProduct == null || localStorageProduct == 0) {
         document.querySelector('h1').textContent = 'Votre panier est vide !';
     }
     else {
@@ -38,11 +68,9 @@ function getCard() {
     }
 };
 
-getCard();
-
 // Fonction pour récupérer la quantité total et le prix total de la commande
 function getTotal() {
-    
+
     let selectQuantity = document.getElementsByClassName('itemQuantity');
     let totalQuantity = 0;
     let totalPrice = 0;
@@ -59,5 +87,3 @@ function getTotal() {
     }
     document.querySelector('#totalPrice').innerHTML = totalPrice;
 };
-
-getTotal();
