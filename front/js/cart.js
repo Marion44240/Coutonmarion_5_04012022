@@ -25,6 +25,8 @@ fetch(url)
 
         getCard();
         getTotal();
+        newQuantity();
+        toDelete();
     })
 
     // Message d'erreur si probléme requête API
@@ -69,8 +71,7 @@ function getCard() {
 };
 
 // Fonction pour récupérer la quantité total et le prix total de la commande
-function getTotal() {
-
+function getTotal() {    
     let selectQuantity = document.getElementsByClassName('itemQuantity');
     let totalQuantity = 0;
     let totalPrice = 0;
@@ -86,4 +87,46 @@ function getTotal() {
         totalPrice += (Number(selectQuantity[i].value) * localStorageProduct[i].price);
     }
     document.querySelector('#totalPrice').innerHTML = totalPrice;
+};
+
+// Fonction pour modifier la quantité d'un produit
+function newQuantity() {
+    let input = document.querySelectorAll('.itemQuantity');
+    
+    for (let i = 0; i < input.length; i++) {
+        // Evenement quand on change la quantité du produit
+        input[i].addEventListener('change', (e) => {
+            e.preventDefault();
+            let inputQuantity = localStorageProduct[i].quantity;
+            let inputValue = Number(input[i].value);
+            let results = localStorageProduct.find((prod) => prod.inputQuantity != inputQuantity);
+            results.quantity = inputValue;
+            localStorageProduct[i].quantity = results.quantity;
+
+            localStorage.setItem('cart',JSON.stringify(localStorageProduct));
+            // Message d'alerte quantité changé
+            alert('Vous avez modifié la quantité du produit')
+            // rafraichissement de la page
+            location.reload();
+        })
+    }
+};
+
+// Fonction pour supprimer un produit
+function toDelete() {
+    let deleteProduct = document.querySelectorAll('.deleteItem');
+
+    for (let i = 0; i< deleteProduct.length; i++) {
+        // Evenement au click sur "supprimer"
+        deleteProduct[i].addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorageProduct.splice(i, 1);
+
+            localStorage.setItem('cart',JSON.stringify(localStorageProduct));
+            // Message d'alerte produit supprimé
+            alert('Votre produit a bien était supprimé de votre panier');
+            // rafraichissement de la page
+            location.reload();
+        })
+    }
 };
