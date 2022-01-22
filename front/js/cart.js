@@ -130,3 +130,86 @@ function toDelete() {
         })
     }
 };
+
+////////// FORMULAIRE ////////////
+
+// Expréssion régulière (regEx) pour vérifie l'email
+const emailRegExp = (value) => {
+    return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(value);
+};
+// Expréssion régulière (regEx) pour vérifie l'adresse
+const addressRegExp = (value) => {
+    return /^[0-9]{1,3}(?:(?:[,. ]){1}[-a-zA-Zàâäéèêëïîôöùûüç]+)+$/.test(value);
+};
+// Expréssion régulière (regEx) pour vérifier le prénom, nom et ville
+const otherRegExp = (value) => {
+    return /^[A-Za-z]+((\s)?((\'|\-|\.)?([A-Za-z])+))*(\s)*$/.test(value);
+};
+
+// Variable qui récupère les éléments du formulaire
+let inputFirstName = document.querySelector('#firstName');
+let inputName = document.querySelector('#lastName');
+let inputAddress = document.querySelector('#address');
+let inputCity = document.querySelector('#city');
+let inputEmail = document.querySelector('#email');
+let inputValid = document.querySelector('#order');
+
+// Fonction qui vérifie le prénom
+function controlFirstName() {
+    if (otherRegExp(inputFirstName.value)) {
+        document.querySelector('#firstNameErrorMsg').textContent = '';
+        return true;
+    }
+    else {
+        document.querySelector('#firstNameErrorMsg').textContent = 'Votre saisie prénom est incorrect';
+        return false;
+    }
+};
+
+// Fonction qui vérifie le nom
+function controlName() {
+    if (otherRegExp(inputName.value)) {
+        document.querySelector('#lastNameErrorMsg').textContent = '';
+        return true;
+    }
+    else {
+        document.querySelector('#lastNameErrorMsg').textContent = 'Votre saisie nom est incorrect';
+        return false;
+    }
+};
+
+// Fonction qui vérifie l'adresse
+function controlAddress() {
+    if (addressRegExp(inputAddress.value)) {
+        document.querySelector('#addressErrorMsg').textContent = '';
+        return true;
+    }
+    else {
+        document.querySelector('#addressErrorMsg').textContent = 'Votre saisie adresse est incorrect';
+        return false;
+    }
+};
+
+// Fonction qui vérifie la ville
+function controlCity() {
+    if (otherRegExp(inputCity.value)) {
+        document.querySelector('#cityErrorMsg').textContent = '';
+        return true;
+    }
+    else {
+        document.querySelector('#cityErrorMsg').textContent = 'Votre saisie ville est incorrect';
+        return false;
+    }
+};
+
+// Fonction qui vérifie l'email
+function controlEmail() {
+    if (emailRegExp(inputEmail.value)) {
+        document.querySelector('#emailErrorMsg').textContent = '';
+        return true;
+    }
+    else {
+        document.querySelector('#emailErrorMsg').textContent = 'Votre saisie email est incorrect';
+        return false;
+    }
+};
