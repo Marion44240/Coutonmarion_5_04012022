@@ -213,3 +213,45 @@ function controlEmail() {
         return false;
     }
 };
+
+// Fonction qui vérifie les données du formulaire et valide la commande
+function validForm() {
+    // Evénement au click du boutton commander
+    inputValid.addEventListener('click', (e) => {
+        e.preventDefault();
+        //appel des fonctions qui vérifie la saisie des champs du formulaire
+        controlFirstName();
+        controlName();
+        controlAddress();
+        controlCity();
+        controlEmail();
+        
+        // Variable d'un tableau récapitulatif ID des produits du local storage à envoyer a l'API
+        let idProduct = [];
+        for (i = 0; i < localStorageProduct.length; i++) {
+            idProduct.push(localStorageProduct[i].id);
+        }
+
+        if (controlFirstName() && controlName() && controlAddress() && controlCity() && controlEmail()) {
+            // Tableau récapitulatif des données client et l'id des produits commandé
+            let formField = {
+                contact : {
+                    firstName: inputFirstName.value,
+                    name: inputName.value,
+                    address: inputAddress.value,
+                    city: inputCity.value,
+                    email: inputEmail.value,
+                },
+                idProduct, 
+            };
+            console.table(formField);
+            alert('Votre commande est validé !')
+            return true;
+        }
+        else {
+            alert('Saisies du formulaire incorrect !');
+            return false;
+        }
+    });    
+}
+validForm();
