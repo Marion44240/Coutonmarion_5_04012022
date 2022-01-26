@@ -27,6 +27,7 @@ fetch(url)
         getTotal();
         newQuantity();
         toDelete();
+        initValidForm();
     })
 
     // Message d'erreur si probléme requête API
@@ -97,11 +98,8 @@ function newQuantity() {
         // Evenement quand on change la quantité du produit
         input[i].addEventListener('change', (e) => {
             e.preventDefault();
-            let inputQuantity = localStorageProduct[i].quantity;
             let inputValue = Number(input[i].value);
-            let results = localStorageProduct.find((prod) => prod.inputQuantity != inputQuantity);
-            results.quantity = inputValue;
-            localStorageProduct[i].quantity = results.quantity;
+            localStorageProduct[i].quantity = inputValue;
 
             localStorage.setItem('cart',JSON.stringify(localStorageProduct));
             // Message d'alerte quantité changé
@@ -153,6 +151,7 @@ let inputAddress = document.querySelector('#address');
 let inputCity = document.querySelector('#city');
 let inputEmail = document.querySelector('#email');
 let inputValid = document.querySelector('#order');
+let formField;
 
 // Fonction qui vérifie le prénom
 function controlFirstName() {
@@ -215,7 +214,7 @@ function controlEmail() {
 };
 
 // Fonction qui vérifie les données du formulaire et valide la commande
-function validForm() {
+function initValidForm() {
     // Evénement au click du boutton commander
     inputValid.addEventListener('click', (e) => {
         e.preventDefault();
@@ -234,18 +233,22 @@ function validForm() {
 
         if (controlFirstName() && controlName() && controlAddress() && controlCity() && controlEmail()) {
             // Tableau récapitulatif des données client et l'id des produits commandé
-            let formField = {
+            formField = {
                 contact : {
                     firstName: inputFirstName.value,
-                    name: inputName.value,
+                    lastName: inputName.value,
                     address: inputAddress.value,
                     city: inputCity.value,
                     email: inputEmail.value,
                 },
-                idProduct, 
+                products: idProduct, 
             };
             console.table(formField);
-            alert('Votre commande est validé !')
+
+            // appel de la fonction qui requête le serveur pour l'envoie des données a l'API
+            saveOrder(formField);
+
+            alert('Votre commande est validé !');  
             return true;
         }
         else {
@@ -254,4 +257,31 @@ function validForm() {
         }
     });    
 }
-validForm();
+
+// Fonction requête du serveur pour envoie des données a l'API 
+function saveOrder(formField) {
+
+    fetch('http://localhost:3000/api/products/order', {
+        method:'POST',
+        body: JSON.stringify(formField),
+        headers: {
+            'Content-type': 'application/json',
+        }
+    })
+
+    .then ((res) => {
+        return res.json();
+    })
+
+    .then ((data) => {
+        console.log(data);
+        // Envoie vers la page confirmation avec l'id de la commande
+        location.href = '/front/html/confirmation.html?orderId='+ data.orderId;
+        // on vide le local storage
+        localStorage.clear();
+    })
+     
+    .catch((error) => {
+        alert('Probléme requête API');
+    })
+}
